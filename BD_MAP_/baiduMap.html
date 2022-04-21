@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?type=webgl&v=3.0&ak=UnEoAvVxbc5t6kYoVlGnrcUhPP6G3hYj"></script>
+    <title>根据经纬度定位</title>
+    <style>
+        html, body, #allmap{
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div id='allmap'></div>
+    <script>
+        // 百度地图API功能
+
+        //GPS原始坐标
+             var x= 104.24264063829423;
+             var y= 30.528206585495298;
+          function movepoint(A,B)//根据输入的坐标定位
+               {
+                   var x=A;
+                   var y=B;
+
+var ggPoint = new BMapGL.Point(x,y);
+//地图初始化
+var bm = new BMapGL.Map("allmap");
+bm.centerAndZoom(ggPoint, 14);
+bm.addControl(new BMapGL.ZoomControl());     //添加缩放控件
+
+//坐标转换完之后的回调函数
+translateCallback = function (data){
+    console.log(data);
+  if(data.status === 0) {
+    var marker = new BMapGL.Marker(data.points[0]);
+    bm.addOverlay(marker);
+    //var label = new BMapGL.Label("飞行器",{offset:new BMapGL.Size(20,-10)});
+    marker.setLabel(label); //添加百度label
+}      bm.setCenter(data.points[0]);
+  }
+
+//坐标转换
+setTimeout(function(){
+    var convertor = new BMapGL.Convertor();
+    var pointArr = [];
+    pointArr.push(ggPoint);
+    convertor.translate(pointArr, COORDINATES_GCJ02, COORDINATES_BD09, translateCallback)
+}, 1000);
+
+               }
+            var ggPoint = new BMapGL.Point(x,y);
+        //地图初始化
+            var bm = new BMapGL.Map("allmap");
+            bm.centerAndZoom(ggPoint, 14);
+            bm.addControl(new BMapGL.ZoomControl());     //添加缩放控件
+
+            //坐标转换完之后的回调函数
+            translateCallback = function (data){
+                console.log(data);
+              if(data.status === 0) {
+                var marker = new BMapGL.Marker(data.points[0]);
+                bm.addOverlay(marker);
+                var label = new BMapGL.Label("初始位置，无飞行器信息",{offset:new BMapGL.Size(20,-10)});
+                marker.setLabel(label); //添加百度label
+          }      bm.setCenter(data.points[0]);
+              }
+
+            //坐标转换
+            setTimeout(function(){
+                var convertor = new BMapGL.Convertor();
+                var pointArr = [];
+                pointArr.push(ggPoint);
+                convertor.translate(pointArr, COORDINATES_GCJ02, COORDINATES_BD09, translateCallback)
+            }, 1000);
+
+
+
+            /**
+             * 坐标常量说明：
+             * COORDINATES_WGS84 = 1, WGS84坐标
+             * COORDINATES_WGS84_MC = 2, WGS84的平面墨卡托坐标
+             * COORDINATES_GCJ02 = 3，GCJ02坐标
+             * COORDINATES_GCJ02_MC = 4, GCJ02的平面墨卡托坐标
+             * COORDINATES_BD09 = 5, 百度bd09经纬度坐标
+             * COORDINATES_BD09_MC = 6，百度bd09墨卡托坐标
+             * COORDINATES_MAPBAR = 7，mapbar地图坐标
+             * COORDINATES_51 = 8，51地图坐标
+            */
+
+    </script>
+
+</body>
+</html>
